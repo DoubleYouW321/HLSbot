@@ -6,6 +6,7 @@ import logging as log
 from aiogram import Bot, Dispatcher
 from config import TOKEN
 from app.handlers import router
+from app.physics_handlers import physics_router
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -13,6 +14,7 @@ dp = Dispatcher()
 
 async def main():
     dp.include_router(router)
+    dp.include_router(physics_router)
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
