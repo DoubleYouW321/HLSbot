@@ -3,6 +3,8 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.types import FSInputFile
 
+import app.keyboard as kb
+
 router = Router()
 
 @router.message(CommandStart())
@@ -14,4 +16,19 @@ async def cmd_start(message: Message):
 2. Психологическое(Эмоции, ментальное здоровье)
 3. Социалное(Обучение, отношение, самореализация)
                          
-Выбирите раздел, который интересует вас в данный момент''')
+Выбирите раздел, который интересует вас в данный момент''', reply_markup=kb.health)
+    
+@router.callback_query(F.data == 'physics')
+async def cmd_physics(callback: CallbackQuery):
+    await callback.answer('')
+    await callback.message.edit_text('Выбирите')
+
+@router.callback_query(F.data == 'psychology')
+async def cmd_physics(callback: CallbackQuery):
+    await callback.answer('')
+    await callback.message.edit_text('Выбирите')
+
+@router.callback_query(F.data == 'social')
+async def cmd_physics(callback: CallbackQuery):
+    await callback.answer('')
+    await callback.message.edit_text('Выбирите')
