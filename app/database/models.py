@@ -36,6 +36,14 @@ class Category(Base):
     steps: Mapped[int] = mapped_column(default=10000)
     user: Mapped["User"] = relationship(back_populates="category")
 
+class MoodRecord(Base):
+    __tablename__ = 'mood_records'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    date: Mapped[str] = mapped_column(default=lambda: date.today().isoformat())
+    mood: Mapped[str] = mapped_column()  
+    emoji: Mapped[str] = mapped_column() 
+
 async def async_main():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

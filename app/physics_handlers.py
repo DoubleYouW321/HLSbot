@@ -46,10 +46,10 @@ async def handle_datas_button(callback: CallbackQuery, state: FSMContext):
     category = await get_user_category(callback.from_user.id)
     today_metrics = await get_today_metrics(callback.from_user.id)
     if today_metrics and (today_metrics['water_glasses'] > 0 or today_metrics['sleep_hours'] > 0 or today_metrics['steps'] > 0):
-        text = f"У вас уже есть данные за сегодня:\n💧 Вода: {today_metrics['water_glasses']}/{category['water']} стаканов\n😴 Сон: {today_metrics['sleep_hours']}/{category['hours']} часов\n👣 Шаги: {today_metrics['steps']}/{category['steps']}\n\nХотите обновить данные?"
+        text = f"У тебя уже есть данные за сегодня:\n💧 Вода: {today_metrics['water_glasses']}/{category['water']} стаканов\n😴 Сон: {today_metrics['sleep_hours']}/{category['hours']} часов\n👣 Шаги: {today_metrics['steps']}/{category['steps']}\n\nХочешь обновить данные?"
         await callback.message.edit_text(text, reply_markup=kb.update_metrics)
     else:
-        text = f"Ваши целевые показатели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}\n\nВведите количество выпитых стаканов воды:"
+        text = f"Твои целевые показатели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}\n\nВведи количество выпитых стаканов воды:"
         await callback.message.edit_text(text, reply_markup=kb.cancel_keyboard)
         await state.set_state(MetricsStates.waiting_for_water)
 
@@ -61,10 +61,10 @@ async def process_water_input(message: Message, state: FSMContext):
             raise ValueError
         await state.update_data(water=water_glasses)
         category = await get_user_category(message.from_user.id)
-        await message.answer(f"Цель по сну: {category['hours']} часов\nВведите количество часов сна:", reply_markup=kb.cancel_keyboard)
+        await message.answer(f"Цель по сну: {category['hours']} часов\nВведи количество часов сна:", reply_markup=kb.cancel_keyboard)
         await state.set_state(MetricsStates.waiting_for_sleep)
     except ValueError:
-        await message.answer("Пожалуйста, введите целое число (например: 8):")
+        await message.answer("Пожалуйста, введи целое число (например: 8):")
 
 @physics_router.message(MetricsStates.waiting_for_sleep)
 async def process_sleep_input(message: Message, state: FSMContext):
@@ -74,10 +74,10 @@ async def process_sleep_input(message: Message, state: FSMContext):
             raise ValueError
         await state.update_data(sleep=sleep_hours)
         category = await get_user_category(message.from_user.id)
-        await message.answer(f"Цель по шагам: {category['steps']}\nВведите количество шагов за день:", reply_markup=kb.cancel_keyboard)
+        await message.answer(f"Цель по шагам: {category['steps']}\nВведи количество шагов за день:", reply_markup=kb.cancel_keyboard)
         await state.set_state(MetricsStates.waiting_for_steps)
     except ValueError:
-        await message.answer("Пожалуйста, введите число (например: 7.5):")
+        await message.answer("Пожалуйста, введи число (например: 7.5):")
 
 @physics_router.message(MetricsStates.waiting_for_steps)
 async def process_steps_input(message: Message, state: FSMContext):
@@ -94,7 +94,7 @@ async def process_steps_input(message: Message, state: FSMContext):
         await message.answer(f"✅ Данные сохранены!\n\n{water_status} Вода: {metrics['water_glasses']}/{category['water']} стаканов\n{sleep_status} Сон: {metrics['sleep_hours']}/{category['hours']} часов\n{steps_status} Шаги: {metrics['steps']}/{category['steps']}\n\nДата: {metrics['date']}", reply_markup=kb.back_to_physics)
         await state.clear()
     except ValueError:
-        await message.answer("Пожалуйста, введите целое число (например: 10000):")
+        await message.answer("Пожалуйста, введи целое число (например: 10000):")
 
 @physics_router.callback_query(F.data == 'my_metrics')
 async def show_my_metrics(callback: CallbackQuery):
@@ -105,9 +105,9 @@ async def show_my_metrics(callback: CallbackQuery):
         water_status = "✅" if metrics['water_glasses'] >= category['water'] else "❌"
         sleep_status = "✅" if metrics['sleep_hours'] >= category['hours'] else "❌"
         steps_status = "✅" if metrics['steps'] >= category['steps'] else "❌"
-        text = f"📊 Ваши показатели за сегодня:\n\n{water_status} Вода: {metrics['water_glasses']}/{category['water']} стаканов\n{sleep_status} Сон: {metrics['sleep_hours']}/{category['hours']} часов\n{steps_status} Шаги: {metrics['steps']}/{category['steps']}\n\nДата: {metrics['date']}"
+        text = f"📊 Твои показатели за сегодня:\n\n{water_status} Вода: {metrics['water_glasses']}/{category['water']} стаканов\n{sleep_status} Сон: {metrics['sleep_hours']}/{category['hours']} часов\n{steps_status} Шаги: {metrics['steps']}/{category['steps']}\n\nДата: {metrics['date']}"
     else:
-        text = f"У вас еще нет данных за сегодня.\n\nВаши цели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}"
+        text = f"У тебя еще нет данных за сегодня.\n\nТвои цели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}"
     await callback.message.edit_text(text, reply_markup=kb.metrics_actions)
 
 @physics_router.callback_query(F.data == 'cancel_input')
@@ -120,15 +120,10 @@ async def cancel_input(callback: CallbackQuery, state: FSMContext):
 async def update_metrics_confirm(callback: CallbackQuery, state: FSMContext):
     await callback.answer('')
     category = await get_user_category(callback.from_user.id)
-    await callback.message.edit_text(f"Введите новые данные:\n\nЦелевые показатели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}\n\nВведите количество выпитых стаканов воды:", reply_markup=kb.cancel_keyboard)
+    await callback.message.edit_text(f"Введи новые данные:\n\nЦелевые показатели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}\n\nВведи количество выпитых стаканов воды:", reply_markup=kb.cancel_keyboard)
     await state.set_state(MetricsStates.waiting_for_water)
-
-@physics_router.callback_query(F.data == 'challendge')
-async def handle_challenge(callback: CallbackQuery):
-    await callback.answer('')
-    await callback.message.edit_text('Раздел челленджей в разработке...', reply_markup=kb.back_to_physics)
 
 @physics_router.callback_query(F.data == 'back_to_main_menu')
 async def back_to_main_menu(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text('Выберите категорию:', reply_markup=kb.health)
+    await callback.message.edit_text('Выбери категорию:', reply_markup=kb.health)
