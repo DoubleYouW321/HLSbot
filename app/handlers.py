@@ -4,11 +4,13 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.types import FSInputFile
 
 import app.keyboard as kb
+import app.database.requests as rq
 
 router = Router()
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
+    await rq.set_user(message.from_user.id)
     await message.answer('''Привет, ты попал в мир здорового оброза жизни и я твой бот-помщник.
                             
 Я уверен что благополучие это баланс трех главных элементов:
