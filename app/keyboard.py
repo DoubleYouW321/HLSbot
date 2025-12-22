@@ -106,3 +106,19 @@ gides = InlineKeyboardMarkup(inline_keyboard=[
 back_to_gides = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='⬅️ Назад', callback_data='library')],
 ])
+
+tests_menu = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='1. Ты слушатель или тот, кто говорит?', callback_data='test_1')],
+    [InlineKeyboardButton(text='2. Ты интроверт или экстраверт?', callback_data='test_2')],
+    [InlineKeyboardButton(text='◀️ Назад', callback_data='social')]
+])
+
+test_answers = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='А', callback_data='answer_a')],
+    [InlineKeyboardButton(text='Б', callback_data='answer_b')]
+])
+
+after_test = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='🔙 К выбору тестов', callback_data='back_to_tests')],
+    [InlineKeyboardButton(text='◀️ Назад в меню', callback_data='social')]
+])

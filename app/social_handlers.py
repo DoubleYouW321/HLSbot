@@ -3,6 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 import app.keyboard as kb
 import asyncio
+from aiogram.types import FSInputFile
 
 social_router = Router()
 
@@ -47,7 +48,9 @@ GIDES = {
 @social_router.callback_query(F.data == 'social')
 async def cmd_social(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text(
+    photo = FSInputFile('images\social.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer(
         '''В разделе Социальное Благополучие ты можешь включить таймер Pomodoro для лучшей фокусировки и работоспособности, пройти мини-тесты которые помогут тебе узнать многое о социальной стороне твоей личность. И почитать гайды из библиотеки soft skills.
                                      
 Выбери интересующий тебя раздел''',
@@ -57,7 +60,9 @@ async def cmd_social(callback: CallbackQuery):
 @social_router.callback_query(F.data == 'timer')
 async def cmd_pomodoro_menu(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text(
+    photo = FSInputFile('images\Timer.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer(
         '''Таймер Помодоро — это инструмент в рамках техники тайм-менеджмента «Pomodoro», который помогает сфокусироваться на задаче, разделяя работу на короткие интервалы по 25 минут (это «помидор»), за которыми следуют 5-минутные перерывы. После четырех таких «помидоров» делается более длительный перерыв (15 минут).''',
         reply_markup=kb.pomodoro
     )
@@ -187,9 +192,11 @@ async def cmd_pomodoro_status(callback: CallbackQuery):
         )
 
 @social_router.callback_query(F.data == 'library')
-async def cmd_tests(callback: CallbackQuery):
+async def cmd_lib(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text('''В библиотеке soft skills ты можешь посмотреть интерсные гайды по ситуация в обществе, которые зачастую вызывают вопросы.
+    photo = FSInputFile('images\gides.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer('''В библиотеке soft skills ты можешь посмотреть интерсные гайды по ситуация в обществе, которые зачастую вызывают вопросы.
                                      
 Выбери интересующий тебя гайд:
 1. «Как уверенно выступить с докладом»
@@ -197,7 +204,8 @@ async def cmd_tests(callback: CallbackQuery):
 3. «Как сказать «НЕТ» и не испортить отношения»''', reply_markup=kb.gides)
     
 @social_router.callback_query(F.data.startswith('gide'))
-async def cmd_tests(callback: CallbackQuery):
+async def cmd_lib_answ(callback: CallbackQuery):
     await callback.answer('')
     num = int(callback.data.split('_')[1])
-    await callback.message.edit_text(GIDES[num], reply_markup=kb.back_to_gides)
+    await callback.message.answer(GIDES[num], reply_markup=kb.back_to_gides)
+

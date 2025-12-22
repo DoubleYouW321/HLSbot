@@ -4,6 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 import random
+from aiogram.types import FSInputFile
 
 import app.keyboard as kb
 from app.database.requests import save_daily_metrics, get_today_metrics, get_user_category
@@ -31,26 +32,32 @@ class MetricsStates(StatesGroup):
 @physics_router.callback_query(F.data == 'physics')
 async def cmd_physics(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text('В разделе ФИЗИЧЕСКОЕ БЛАГОПОЛУЧИЕ ты можешь получить совет из Базы Знаний, а также записать и редактировать свои физические показатели(кол-во выпитых стаканов воды, часы сна и кол-во пройденных шагов), сравнивая их с норомой.', reply_markup=kb.physics)
+    photo = FSInputFile('images\physics_health.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer('В разделе ФИЗИЧЕСКОЕ БЛАГОПОЛУЧИЕ ты можешь получить совет из Базы Знаний, а также записать и редактировать свои физические показатели(кол-во выпитых стаканов воды, часы сна и кол-во пройденных шагов), сравнивая их с норомой.', reply_markup=kb.physics)
 
 @physics_router.callback_query(F.data == 'advice')
 async def generate_advice(callback: CallbackQuery):
     await callback.answer('')
     random_adv = random.randint(1, 10)
     advice = ADVICES[random_adv]
-    await callback.message.edit_text(advice, reply_markup=kb.back_to_physics)
+    photo = FSInputFile('images\Bazeknow.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer(advice, reply_markup=kb.back_to_physics)
 
 @physics_router.callback_query(F.data == 'datas')
 async def handle_datas_button(callback: CallbackQuery, state: FSMContext):
     await callback.answer('')
+    photo = FSInputFile('images\datas.jpeg')
+    await callback.message.answer_photo(photo=photo)
     category = await get_user_category(callback.from_user.id)
     today_metrics = await get_today_metrics(callback.from_user.id)
     if today_metrics and (today_metrics['water_glasses'] > 0 or today_metrics['sleep_hours'] > 0 or today_metrics['steps'] > 0):
         text = f"У тебя уже есть данные за сегодня:\n💧 Вода: {today_metrics['water_glasses']}/{category['water']} стаканов\n😴 Сон: {today_metrics['sleep_hours']}/{category['hours']} часов\n👣 Шаги: {today_metrics['steps']}/{category['steps']}\n\nХочешь обновить данные?"
-        await callback.message.edit_text(text, reply_markup=kb.update_metrics)
+        await callback.message.answer(text, reply_markup=kb.update_metrics)
     else:
         text = f"Твои целевые показатели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}\n\nВведи количество выпитых стаканов воды:"
-        await callback.message.edit_text(text, reply_markup=kb.cancel_keyboard)
+        await callback.message.answer(text, reply_markup=kb.cancel_keyboard)
         await state.set_state(MetricsStates.waiting_for_water)
 
 @physics_router.message(MetricsStates.waiting_for_water)
@@ -108,22 +115,22 @@ async def show_my_metrics(callback: CallbackQuery):
         text = f"📊 Твои показатели за сегодня:\n\n{water_status} Вода: {metrics['water_glasses']}/{category['water']} стаканов\n{sleep_status} Сон: {metrics['sleep_hours']}/{category['hours']} часов\n{steps_status} Шаги: {metrics['steps']}/{category['steps']}\n\nДата: {metrics['date']}"
     else:
         text = f"У тебя еще нет данных за сегодня.\n\nТвои цели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}"
-    await callback.message.edit_text(text, reply_markup=kb.metrics_actions)
+    await callback.message.answer(text, reply_markup=kb.metrics_actions)
 
 @physics_router.callback_query(F.data == 'cancel_input')
 async def cancel_input(callback: CallbackQuery, state: FSMContext):
     await state.clear()
-    await callback.message.edit_text("Ввод данных отменен.", reply_markup=kb.physics)
+    await callback.message.answer("Ввод данных отменен.", reply_markup=kb.physics)
     await callback.answer()
 
 @physics_router.callback_query(F.data == 'update_metrics_confirm')
 async def update_metrics_confirm(callback: CallbackQuery, state: FSMContext):
     await callback.answer('')
     category = await get_user_category(callback.from_user.id)
-    await callback.message.edit_text(f"Введи новые данные:\n\nЦелевые показатели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}\n\nВведи количество выпитых стаканов воды:", reply_markup=kb.cancel_keyboard)
+    await callback.message.answer(f"Введи новые данные:\n\nЦелевые показатели:\n💧 Вода: {category['water']} стаканов\n😴 Сон: {category['hours']} часов\n👣 Шаги: {category['steps']}\n\nВведи количество выпитых стаканов воды:", reply_markup=kb.cancel_keyboard)
     await state.set_state(MetricsStates.waiting_for_water)
 
 @physics_router.callback_query(F.data == 'back_to_main_menu')
 async def back_to_main_menu(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text('Выбери категорию:', reply_markup=kb.health)
+    await callback.message.answer('Выбери категорию:', reply_markup=kb.health)

@@ -11,6 +11,8 @@ router = Router()
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await rq.set_user(message.from_user.id)
+    photo = FSInputFile('images\hello.jpg')
+    await message.answer_photo(photo=photo)
     await message.answer('''Привет, ты попал в мир здорового оброза жизни и я твой бот-помщник.
                             
 Я уверен что благополучие это баланс трех главных элементов:

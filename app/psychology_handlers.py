@@ -3,6 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 import app.keyboard as kb
 from aiogram import Bot
+from aiogram.types import FSInputFile
 
 from app.database import requests as db_requests
 
@@ -126,22 +127,26 @@ PROBLEMS = {
 
 Важно знать, что не стоить делать следующего:
   1.   Мстить. Это опустит тебя до его уровня и затянет в негативную воронку.
-  2.    Оправдывать предателя в ущерб себе ("Может, он не подумал" или  "Может, у него были причины"). Даже если причины были, твоя боль и нарушенное доверие — это факт.
+  2.    Оправдывать предателя в ущерб себе ("Может, он не подумал" или  "Может, у него были причины"). Да даже если причины были, твоя боль и нарушенное доверие — это факт.
   3.   Замыкаться в себе и решать, что теперь "доверять нельзя никому". Ты перечеркнешь возможность будущих глубоких и искренних отношений, что является неправильным.''', 
 }
 @psychology_router.callback_query(F.data == 'psychology')
 async def cmd_psychology(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text('Ты находишься в разделе Психологическое Благополучие. Здесь можно избавиться от тревоги при нажатии на кнопку SOS, воспеользоваться в дневнике настроения ты можешь поделиться своими чувставуми и увидеть их статистику. А в разделе навигатор помощи ты можешь поделиться с ботом своими проблемами и решить их  пошагово',
+    photo = FSInputFile('images\psych.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer('Ты находишься в разделе Психологическое Благополучие. Здесь можно избавиться от тревоги при нажатии на кнопку SOS, воспеользоваться в дневнике настроения ты можешь поделиться своими чувставуми и увидеть их статистику. А в разделе навигатор помощи ты можешь поделиться с ботом своими проблемами и решить их  пошагово',
                                      reply_markup=kb.psychology)
     
 @psychology_router.callback_query(F.data == 'sos')
 async def cmd_sos(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text('''Что вас интересует?
+    photo = FSInputFile('images\sos.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer('''Что вас интересует?
 
 1. Активировать парасимпатическую нервную систему («режим отдыха»), снизить пульс и давление
-2. Побороть бессонницу и тревогу
+2. Побороть бессоницу и тревогу
 3. Сконцентрация, снизить внутренний «шум», сбалансировать нервную систему
 4. Сбалансировать левое и правое полушарие мозга
 ''', reply_markup=kb.sos)
@@ -150,12 +155,12 @@ async def cmd_sos(callback: CallbackQuery):
 async def cmd_sos_callback(callback: CallbackQuery):
     await callback.answer('')
     num = int(callback.data.split('_')[1])
-    await callback.message.edit_text(SOS[num], reply_markup=kb.back_to_sos)
+    await callback.message.answer(SOS[num], reply_markup=kb.back_to_sos)
 
 @psychology_router.callback_query(F.data == 'happy_diary')
 async def cmd_happy_diary(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text(
+    await callback.message.answer(
         '📔 Дневник настроения\n\n'
         'Выбери смайл, который соответствует твоему текущему настроению:',
         reply_markup=kb.mood_keyboard
@@ -201,7 +206,7 @@ async def cmd_save_mood(callback: CallbackQuery):
         response += "Это ваше первое настроение! 🎉\n"
         response += f"Сохранено: {emoji}"
     
-    await callback.message.edit_text(
+    await callback.message.answer(
         response,
         reply_markup=kb.mood_keyboard
     )
@@ -229,7 +234,7 @@ async def cmd_mood_stats(callback: CallbackQuery):
         
         keyboard = kb.mood_stats_keyboard
     
-    await callback.message.edit_text(
+    await callback.message.answer(
         response,
         reply_markup=keyboard
     )
@@ -237,7 +242,9 @@ async def cmd_mood_stats(callback: CallbackQuery):
 @psychology_router.callback_query(F.data == 'help_navig')
 async def cmd_help_navig(callback: CallbackQuery):
     await callback.answer('')
-    await callback.message.edit_text('''В разделе Навигатор помощи ты можешь поделиться со мной своими душевными проблемами и я помогу тебя их решить.
+    photo = FSInputFile('images\helpnavig.jpeg')
+    await callback.message.answer_photo(photo=photo)
+    await callback.message.answer('''В разделе Навигатор помощи ты можешь поделиться со мной своими душевными проблемами и я помогу тебя их решить.
 
 Выбери проблему:
 1. Критика со стороны друга
@@ -249,4 +256,4 @@ async def cmd_help_navig(callback: CallbackQuery):
 async def cmd_help_callback(callback: CallbackQuery):
     await callback.answer('')
     num = int(callback.data.split('_')[1])
-    await callback.message.edit_text(PROBLEMS[num], reply_markup=kb.back_to_navigator)
+    await callback.message.answer(PROBLEMS[num], reply_markup=kb.back_to_navigator)

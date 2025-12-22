@@ -1,4 +1,4 @@
-from app.database.models import async_session, User, Category, DailyMetric, MoodRecord
+from app.database.models import async_session, User, Category, DailyMetric, MoodRecord, Comment
 from sqlalchemy import select, and_, func
 from datetime import date
 
@@ -152,3 +152,11 @@ async def get_all_moods(tg_id: int):
             }
             for mood in moods
         ]
+    
+async def set_comment(tg_id, comment_text):
+    try:
+        async with async_session() as session:
+            session.add(Comment(tg_id=tg_id, comment_text=comment_text))
+            await session.commit()
+    except Exception as e:
+        print(f"Ошибка при сохранении комментария: {e}")

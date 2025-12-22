@@ -44,6 +44,12 @@ class MoodRecord(Base):
     mood: Mapped[str] = mapped_column()  
     emoji: Mapped[str] = mapped_column() 
 
+class Comment(Base):
+    __tablename__ = 'feedback'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tg_id: Mapped[int] = mapped_column(BigInteger)
+    comment_text: Mapped[str] = mapped_column()
+
 async def async_main():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
