@@ -70,10 +70,39 @@ problems = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='2', callback_data='problem_2')],
     [InlineKeyboardButton(text='3', callback_data='problem_3')],
     [InlineKeyboardButton(text='4', callback_data='problem_4')],
-    [InlineKeyboardButton(text='5', callback_data='problem_5')],
     [InlineKeyboardButton(text='⬅️ Назад', callback_data='psychology')],
 ])
 
 back_to_navigator = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='⬅️ Назад', callback_data='help_navig')],
+])
+
+social = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='Таймер Pomodoro', callback_data='timer')],
+    [InlineKeyboardButton(text='Мини-тесты', callback_data='tests')],
+    [InlineKeyboardButton(text='Библиотека Soft Skills', callback_data='library')],
+    [InlineKeyboardButton(text='⬅️ Назад в меню', callback_data='back_to_main_menu')],
+])
+
+pomodoro = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='▶️ Запустить таймер', callback_data='timer_start')],
+    [InlineKeyboardButton(text='📊 Статус таймера', callback_data='timer_status')],
+    [InlineKeyboardButton(text='⬅️ Назад', callback_data='social')],
+])
+
+stop_timer = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='⏹️ Остановить таймер', callback_data='timer_stop')],
+    [InlineKeyboardButton(text='📊 Статус', callback_data='timer_status')],
+    [InlineKeyboardButton(text='⬅️ Назад', callback_data='social')],
+])
+
+gides = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='1', callback_data='gide_1')],
+    [InlineKeyboardButton(text='2', callback_data='gide_2')],
+    [InlineKeyboardButton(text='3', callback_data='gide_3')],
+    [InlineKeyboardButton(text='⬅️ Назад', callback_data='social')],
+])
+
+back_to_gides = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text='⬅️ Назад', callback_data='library')],
 ])
