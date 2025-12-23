@@ -35,7 +35,7 @@
 #### 1. Клонирование репозитория
 Откройте терминал и выполните:
 ```bash
-git clone <URL_вашего_репозитория_на_GitHub>
+git clone <https://github.com/DoubleYouW321/HLSbot>
 cd <название_папки_проекта>
 ```
 
